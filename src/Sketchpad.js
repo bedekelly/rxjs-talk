@@ -36,14 +36,13 @@ export default function Sketchpad() {
 
     // Stream of points in an unbroken line.
     const singleLine$ = pointerMove$.pipe(
-
+      takeUntil(pointerUp$)
     );
 
     // Draw each line: first move to the start, then draw a line with the points.
     const lines$ = pointerDown$.pipe(
       tap(moveWithoutDrawing),
       switchMapTo(singleLine$),
-      takeUntil(pointerUp$)
     ).subscribe(drawLineToPoint);
 
     return () => lines$.unsubscribe();
