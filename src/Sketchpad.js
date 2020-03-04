@@ -5,6 +5,7 @@ import {
   map,
   withLatestFrom,
   filter,
+  switchMapTo,
   tap,
   switchMap,
   mapTo, scan
@@ -19,27 +20,31 @@ export default function Sketchpad() {
     ctx.lineWidth = 2;
     ctx.imageSmoothingEnabled = true;
 
+    // Move to a point without drawing a line.
+    const moveWithoutDrawing = ({ x, y }) => ctx.moveTo(x, y);
+
+    // Draw a line to a point.
+    const drawLineToPoint = ({x, y}) => {
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    };
+
     // Streams of each event.
     const pointerDown$ = fromEvent(canvasRef.current, "pointerdown");
     const pointerMove$ = fromEvent(canvasRef.current, "pointermove");
     const pointerUp$ = fromEvent(canvasRef.current, "pointerup");
 
-    // Stream of points in a single unbroken line.
-    const oneLinePoints$ = () => pointerMove$.pipe(
-      takeUntil(pointerUp$)
+    // Stream of points in an unbroken line.
+    const singleLine$ = pointerMove$.pipe(
+
     );
 
-    // Side effect: move to a point without drawing a line.
-    const moveWithoutDrawing = ({ x, y }) => ctx.moveTo(x, y);
-
-    // Draw each line.
+    // Draw each line: first move to the start, then draw a line with the points.
     const lines$ = pointerDown$.pipe(
       tap(moveWithoutDrawing),
-      switchMap(oneLinePoints$)
-    ).subscribe(event => {
-        ctx.lineTo(event.x, event.y);
-        ctx.stroke();
-      });
+      switchMapTo(singleLine$),
+      takeUntil(pointerUp$)
+    ).subscribe(drawLineToPoint);
 
     return () => lines$.unsubscribe();
   }, []);
