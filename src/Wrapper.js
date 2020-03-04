@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useCallback, useState} from "react";
 import App from "./App";
 import { networkRequest, threeNetworkRequests } from "./networkRequest";
 import ShowNetworkRequests from "./ShowNetworkRequests";
@@ -28,14 +28,12 @@ export default function Wrapper() {
       })
     );
 
-  const oneRequest = url =>
-    networkRequest(url, onStart(url), onComplete, onCancel);
-  const threeRequests = url =>
-    threeNetworkRequests(url, onStart(url), onComplete, onCancel);
+  const threeRequests = useCallback(url =>
+    threeNetworkRequests(url, onStart(url), onComplete, onCancel), [threeNetworkRequests]);
 
   return (
     <div style={{ maxWidth: '400px', margin: '50px auto', display: 'flex', flexDirection: 'column' }}>
-      <App networkRequest={oneRequest} threeNetworkRequests={threeRequests} />
+      <App threeNetworkRequests={threeRequests} />
       <ShowNetworkRequests requests={requests} />
     </div>
   );

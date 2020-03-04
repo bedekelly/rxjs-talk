@@ -1,17 +1,18 @@
-import React, { useEffect, useRef } from "react";
+import React, {memo, useEffect, useRef} from "react";
 import { fromEvent, merge } from "rxjs";
 import Button from './StyledButton';
 import {
   mapTo,
   map,
-  switchMap, exhaustMap, mergeMap, concatMap
+  switchMap, exhaustMap, mergeMap, concatMap, mergeAll
 } from "rxjs/operators";
 
 
-export default function App({ threeNetworkRequests }) {
+function App({ threeNetworkRequests }) {
   const greenButton = useRef(null);
   const blueButton = useRef(null);
 
+  // console.log(threeNetworkRequests("https://api.url").subscribe());
 
   useEffect(() => {
     const greenClicks$ = fromEvent(greenButton.current, "click");
@@ -21,10 +22,11 @@ export default function App({ threeNetworkRequests }) {
       greenClicks$.pipe(mapTo("https://api/green")),
       blueClicks$.pipe(mapTo("httpss://api/blue")),
     ).pipe(
-      map(url => threeNetworkRequests(url).subscribe())
+      map(url => threeNetworkRequests(url)),
+      mergeAll(),
     );
 
-    const sub = clicks$.subscribe();
+    const sub = clicks$.subscribe(value => console.log(value));
     return () => sub.unsubscribe();
   }, []);
 
@@ -36,3 +38,6 @@ export default function App({ threeNetworkRequests }) {
     </>
   );
 }
+
+
+export default memo(App);
