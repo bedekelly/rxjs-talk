@@ -9,32 +9,22 @@ import {
 
 
 function App({ threeNetworkRequests }) {
-  const greenButton = useRef(null);
-  const blueButton = useRef(null);
-
-  // console.log(threeNetworkRequests("https://api.url").subscribe());
+  const greenButtonRef = useRef(null);
+  const blueButtonRef = useRef(null);
 
   useEffect(() => {
-    const greenClicks$ = fromEvent(greenButton.current, "click");
-    const blueClicks$ = fromEvent(blueButton.current, "click");
+    const greenButton = greenButtonRef.current;
+    const blueButton = blueButtonRef.current;
 
-    const clicks$ = merge(
-      greenClicks$.pipe(mapTo("https://api/green")),
-      blueClicks$.pipe(mapTo("httpss://api/blue")),
-    ).pipe(
-      map(url => threeNetworkRequests(url)),
-      mergeAll(),
-    );
+    // Todo!
 
-    const sub = clicks$.subscribe(value => console.log(value));
-    return () => sub.unsubscribe();
   }, []);
 
 
   return (
     <>
-      <button style={{ background: 'lightgreen' }} ref={greenButton}>Green</button>
-      <button style={{ background: 'lightblue' }} ref={blueButton}>Blue</button>
+      <button style={{ background: 'lightgreen' }} ref={greenButtonRef}>Green</button>
+      <button style={{ background: 'lightblue' }} ref={blueButtonRef}>Blue</button>
     </>
   );
 }
