@@ -55,7 +55,7 @@ export const ImportantButton = ({ id }) => <button id={id}>IMPORTANT</button>;
 export const HelpBox = styled.div`
   background: white;
   height: 5vh;
-  font-size: 2rem;
+  font-size: 1.5rem;
   width: 80vw;
   box-shadow: 0 0 5px lightblue inset;
   padding: 4px 0 0 10px;
