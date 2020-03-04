@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Chart from './mouseover-images/Chart.png';
-import Table from './mouseover-images/Table.png';
+import TableImage from './mouseover-images/Table.png';
 
 export const Header = styled.section`
   background: lightblue;
@@ -49,7 +49,7 @@ export const Content = styled.section`
 
 
 export const Graph = ({ id }) => <img src={Chart} alt="" id={id}/>;
-export const TableC = ({ id }) => <img src={Table} alt="" id={id}/>;
+export const Table = ({ id }) => <img src={TableImage} alt="" id={id}/>;
 export const ImportantButton = ({ id }) => <button id={id}>IMPORTANT</button>;
 
 export const HelpBox = styled.div`
