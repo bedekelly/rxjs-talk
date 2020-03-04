@@ -24,11 +24,18 @@ export default function Sketchpad() {
     const pointerMove$ = fromEvent(canvasRef.current, "pointermove");
     const pointerUp$ = fromEvent(canvasRef.current, "pointerup");
 
+    // Stream of points in a single unbroken line.
+    const oneLinePoints$ = () => pointerMove$.pipe(
+      takeUntil(pointerUp$)
+    );
+
+    // Side effect: move to a point without drawing a line.
+    const moveWithoutDrawing = ({ x, y }) => ctx.moveTo(x, y);
+
+    // Draw each line.
     const lines$ = pointerDown$.pipe(
-      tap(event => ctx.moveTo(event.x, event.y)),
-      switchMap(event => pointerMove$.pipe(
-        takeUntil(pointerUp$)
-      ))
+      tap(moveWithoutDrawing),
+      switchMap(oneLinePoints$)
     ).subscribe(event => {
         ctx.lineTo(event.x, event.y);
         ctx.stroke();
