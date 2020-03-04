@@ -27,7 +27,6 @@ export default function MouseOverApp() {
   const [helpText, setHelpText] = useState(defaultHelpText);
 
   useEffect(() => {
-    const stop$ = fromEvent(document.querySelector('#stop'), 'click');
     const mouseMove$ = fromEvent(document, "mousemove");
     const elements$ = mouseMove$.pipe(
       map(({x, y}) => document.elementFromPoint(x, y)),
@@ -39,8 +38,6 @@ export default function MouseOverApp() {
           return helpTextById[element.id] || defaultHelpText;
         }
       }),
-      takeUntil(stop$),
-      endWith('')
     );
 
     const subscription = elements$.subscribe(setHelpText);
@@ -62,7 +59,6 @@ export default function MouseOverApp() {
 
       <Footer>
         <HelpBox>{helpText}</HelpBox>
-        <button id="stop">Stop</button>
       </Footer>
     </Layout>
   );
