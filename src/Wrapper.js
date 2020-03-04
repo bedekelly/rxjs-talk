@@ -35,7 +35,7 @@ export default function Wrapper() {
 
   return (
     <div style={{ maxWidth: '400px', margin: '50px auto', display: 'flex', flexDirection: 'column' }}>
-      <App networkRequest={oneRequest} threeNetworkRequests={threeRequests} />
+      <App fetch={oneRequest} threeNetworkRequests={threeRequests} />
       <ShowNetworkRequests requests={requests} />
     </div>
   );

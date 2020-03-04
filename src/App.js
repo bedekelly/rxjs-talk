@@ -4,35 +4,28 @@ import Button from './StyledButton';
 import {
   mapTo,
   map,
-  switchMap, exhaustMap, mergeMap, concatMap
+  switchMap, exhaustMap, mergeMap, concatMap, throttleTime, scan, filter
 } from "rxjs/operators";
 
 
-export default function App({ threeNetworkRequests }) {
-  const greenButton = useRef(null);
-  const blueButton = useRef(null);
-
+export default function App({ fetch }) {
+  const button = useRef(null);
 
   useEffect(() => {
-    const greenClicks$ = fromEvent(greenButton.current, "click");
-    const blueClicks$ = fromEvent(blueButton.current, "click");
-
-    const clicks$ = merge(
-      greenClicks$.pipe(mapTo("https://api/green")),
-      blueClicks$.pipe(mapTo("httpss://api/blue")),
-    ).pipe(
-      map(url => threeNetworkRequests(url).subscribe())
+    const click$ = fromEvent(button.current, 'click')
+      .pipe(
+        throttleTime(1500),
+      );
+    const sub = click$.subscribe(
+      () => fetch('https://api/something')
     );
-
-    const sub = clicks$.subscribe();
     return () => sub.unsubscribe();
   }, []);
 
 
   return (
     <>
-      <button style={{ background: 'lightgreen' }} ref={greenButton}>Green</button>
-      <button style={{ background: 'lightblue' }} ref={blueButton}>Blue</button>
+      <button ref={button}>Click to Refresh</button>
     </>
   );
 }
