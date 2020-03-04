@@ -9,23 +9,19 @@ import {
 
 
 export default function App({ fetch }) {
-  const button = useRef(null);
+  const buttonRef = useRef(null);
 
   useEffect(() => {
-    const click$ = fromEvent(button.current, 'click')
-      .pipe(
-        throttleTime(1500),
-      );
-    const sub = click$.subscribe(
-      () => fetch('https://api/something')
-    );
-    return () => sub.unsubscribe();
-  }, []);
+    // This code runs when the component renders for the first time.
+    const button = buttonRef.current;
 
+    // Todo!
+
+  }, []);
 
   return (
     <>
-      <button ref={button}>Click to Refresh</button>
+      <button ref={buttonRef}>Click to Refresh</button>
     </>
   );
 }
