@@ -1,11 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { fromEvent, merge } from "rxjs";
-import Button from './StyledButton';
-import {
-  mapTo,
-  map,
-  switchMap, exhaustMap, mergeMap, concatMap, throttleTime, scan, filter
-} from "rxjs/operators";
+import {fromEvent} from "rxjs";
+import {throttleTime} from "rxjs/operators";
 
 
 export default function App({ fetch }) {
@@ -16,6 +11,15 @@ export default function App({ fetch }) {
     const button = buttonRef.current;
 
     // Todo!
+    const clicks = fromEvent(button, 'click');
+
+    const throttledClicks = clicks.pipe(
+      throttleTime(1000)
+    );
+
+    clicks.subscribe(clickEvent => console.log(clickEvent));
+
+    throttledClicks.subscribe(() => fetch("https://api.url"));
 
   }, []);
 
